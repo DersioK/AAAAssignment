@@ -12,17 +12,30 @@ public class knn{
             }
         }
         System.out.println();
-        return null;
+        return matrix;
     }
-    //Still wokring on this
-    public static double distance(ArrayList <Integer> X, ArrayList <Integer> Y){
-        double  dist=0;
+    public static double distance(int [][] points){
+        double dist=0;
         double z = 2;
-        for(int i =0;i<X.size();i++){
-            dist  = (int)(Math.sqrt((Math.pow(Y.get(i)-X.get(i),2))+Math.pow(Y.get(i+1)-X.get(i+1),2)));
+        for(int i =0;i<points.length;i++){
+           dist  = (Math.sqrt((Math.pow(points[i+1][0]-points[i][0],2))+(Math.pow(points[i+1][1]-points[i][1],2))));
             System.out.println(dist);
         }
         return dist;
+    }
+    public static int[][] mapArrays(ArrayList <Integer> X, ArrayList <Integer> Y) {
+        int[][]points=new int[X.size()][2];
+        for(int i = 0;i <X.size();i++){
+           points[i][0] =X.get(i);
+            points[i][1] =Y.get(i);
+        }
+
+//       for(int i=0;i<points.length;i++){
+//        System.out.print(points[i][0]);
+//        System.out.print(points[i][1]);
+//           System.out.println();
+//        }
+        return points;
     }
     public static void main(String[] args){
         String s,g;
@@ -65,6 +78,8 @@ public class knn{
         System.out.println();
         System.out.print("Y "+y_cords);
         System.out.println();
-        distance(x_cords,y_cords);
+//        distance(x_cords,y_cords);
+        distance(mapArrays(x_cords,y_cords));
         }
-    }
+   }
+
