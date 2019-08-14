@@ -4,49 +4,40 @@ public class Main{
     public static int[][]adjMatrix(int n){
         int[][] matrix = new int[n][n];
         for(int i=0;i<matrix.length;i++){
-            System.out.println();
+           // System.out.println();
             for(int j=0;j<matrix[i].length;j++){
                 matrix[i][j] =0;
                 // matrix[j][i] =0;
-                System.out.print(matrix[i][j]);
+              // System.out.print(matrix[i][j]);
             }
         }
-        System.out.println();
+        //System.out.println();
         return matrix;
     }
-    public static List<Element>distance(int [][] points) {
+    public static List<Element>distance(ArrayList<sample_points>points) {
+        int k=0,n;
         double dist = 0;
         double z = 2;
+        points.get(2);
+       // Map<sample_points,Double>distances = new HashMap();
         ArrayList<Double> distances = new ArrayList<Double>();
-        for (int i = 0; i <= points.length; i++) {
-            for (int j = i + 1; j < points.length; j++) {
-                dist = Math.sqrt((Math.pow(points[i][0] - points[j][0], 2)) + Math.pow(points[i][1] - points[j][1], 2));
+        List<Element> elements = new ArrayList<Element>();
+        for (int i = 0; i <= points.size(); i++) {
+            for (int j = i + 1; j < points.size(); j++) {
+                dist = Math.sqrt((Math.pow(points.get(i).getX() - points.get(j).getX(),2)) + Math.pow(points.get(i).getY() - points.get(j).getY(),2));
+                sample_points neighbour = new sample_points();
+                neighbour.setX(points.get(i+1).getX());
+                neighbour.setY(points.get(i+1).getY());
                 distances.add(dist);
             }
         }
-        List<Element> elements = new ArrayList<Element>();
         for (int i = 0; i < distances.size(); i++) {
             elements.add(new Element(i, distances.get(i)));
         }
         Collections.sort(elements);
+        List<Element> newList = new ArrayList(elements.subList(0,k));
         return elements;
     }
-        //System.out.print(distances);
-        //System.out.println();
-
-//       for(Element element:elements){
-//           System.out.println(element.distance + " "+ element.index);
-//       }
-
-
-//    public static List<Element> findK(List<Element>distances,int k){
-//        // = new List<Element>();
-//
-//        for(int i=0;i<k;i++){
-//
-//        }
-//
-//    }
 
     public static int[][] mapArrays(ArrayList <Integer> X, ArrayList <Integer> Y) { //this method takes in x_cords and y_cordd
         int[][]points=new int[X.size()][2]; //initialising 2d array where x.size is the number of sample points and "2" is how many elements a single point has
@@ -58,7 +49,7 @@ public class Main{
     }
     public static void main(String[] args){
 
-        String s,g;
+        String s,g,r;
         String spaces[];
         String co_ord[];
         String co_ord2[];
@@ -67,7 +58,17 @@ public class Main{
 
         ArrayList <Integer> y_cords = new ArrayList<Integer>();
         ArrayList <Integer> x_cords = new ArrayList<Integer>();
+        ArrayList <Integer> x_start = new ArrayList<Integer>();
+        ArrayList <Integer> y_start = new ArrayList<Integer>();
+        ArrayList <Integer> x_obs = new ArrayList<Integer>();
+        ArrayList <Integer> y_obs = new ArrayList<Integer>();
         ArrayList <Integer> z = new ArrayList<Integer>();
+        ArrayList <Integer> x = new ArrayList<Integer>();
+        ArrayList <start_end_points> samplePoints2 = new ArrayList<start_end_points>();
+        ArrayList <obstacle_points> obstacles = new ArrayList<obstacle_points>();
+        ArrayList <sample_points> samplePoints= new ArrayList<sample_points>();
+
+       // sample_points newPoint =  new sample_points();
 
         Scanner in = new Scanner(System.in);
 
@@ -83,38 +84,73 @@ public class Main{
         }
 
         k = q[0]; //beginning of the main things we need to store#store
-        p = q[1];
-        n = q[2]; //to remember where they are in q
+        p = q[1]; //number of obstacles
+        n = q[2]; //number of sample points
 
+        Scanner start = new Scanner(System.in); // create a new scanner for our sample points
+        int count =1;
+        while(start.hasNextLine()) {
+            r = start.nextLine();
+            if (count < 2) {
+                co_ord2 = r.split(",");
+                for (int i = 0; i < co_ord2.length; i++) {
+                    x.add(Integer.parseInt(co_ord2[i]));
+                }
+                count++;
+            } else {
+                break;
+            }
+        }
+
+        for (int i = 0; i < z.size(); i = i + 2) {
+            x_start.add(x.get(i));
+        }
+        //similarly for y but we start at 1
+        for (int j = 1; j < z.size(); j = j + 2) {
+            y_start.add(x.get(j));
+        }
+
+        for(int i=0;i<x_start.size();i++) {
+            start_end_points newPoint = new start_end_points();
+            newPoint.setX(x_start.get(i));
+            newPoint.setY(y_start.get(i));
+            samplePoints2.add(newPoint);
+        }
 
         Scanner e = new Scanner(System.in); // create a new scanner for our sample points
-
+        int counter =1;
         while(e.hasNextLine()) {
             g = e.nextLine();
-            if(!g.equalsIgnoreCase("end")) {
+            if(counter < n) {
                 co_ord = g.split(","); // splitting the sample points by a comma and storing it in the string array co_ord
                 for (int i = 0; i < co_ord.length; i++) {
                      z.add(Integer.parseInt(co_ord[i]));// then convert elements in co_ord to integers and then store in arraylist z
                 }
+                counter++;
             }
-            else{break;}
+            else{
+                break;
+            }
         }
-        for (int i = 0; i < z.size(); i = i + 2) { //we want add every other element (i.e x coordinates of sample points) to x_cords Arraylist so we increment by  2 and start at 0
+        //we want add every other element (i.e x coordinates of sample points) to x_cords Arraylist so we increment by  2 and start at 0
+       // sample_points newPoint = new sample_points();
+        for (int i = 0; i < z.size(); i = i + 2) {
             x_cords.add(z.get(i));
         }
-        for (int i = 1; i < z.size(); i = i + 2) { //similarly for y but we start at 1
-            y_cords.add(z.get(i));
-        }                                           //ending of the main things we need to store#store
-//        System.out.print("X: "+ x_cords);
-//        System.out.println();
-//        System.out.print("Y "+y_cords);
-//        System.out.println();
-//        distance(x_cords,y_cords);
-        distance(mapArrays(x_cords,y_cords));
-       // Pair dist[] = new Pair[n];
-        }
-   }
+            //similarly for y but we start at 1
+            for (int j = 1; j < z.size(); j = j + 2) {
+                y_cords.add(z.get(j));
+            }
 
+        for(int i=0;i<x_cords.size();i++) {
+                sample_points newPoint = new sample_points();
+                newPoint.setX(x_cords.get(i));
+                newPoint.setY(y_cords.get(i));
+                samplePoints.add(newPoint);
+        }
+        //ending of the main things we need to store#store
+    }
+}
 class Element implements  Comparable<Element> {
     public final int index;
     public final double distance;
@@ -129,24 +165,3 @@ class Element implements  Comparable<Element> {
     }
 }
 
-
-
-//        double [] distances  = new double [k];
-//        int [] closest_nodes = new int[k];
-//        double dist=Double.POSITIVE_INFINITY;
-//        for(int i=0;i<k;i++){
-//            distances[i] = Double.POSITIVE_INFINITY;
-//            closest_nodes[i] = -1;
-//        }
-////        for(int i=0;i<=points.length;i++){
-////            for(int j =i+1;j<distances.length;j++) {
-////                if (distance(points) < dist) {
-////                    dist = distance(points);
-////                    distances[i] = dist;
-////                }
-////            }
-////        }
-//        for (int i=0;i<distances.length;i++){
-//            System.out.println(distances[i]);
-//        }
-//        return distances;
