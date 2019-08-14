@@ -64,7 +64,7 @@ public class Main{
         ArrayList <Integer> y_obs = new ArrayList<Integer>();
         ArrayList <Integer> z = new ArrayList<Integer>();
         ArrayList <Integer> x = new ArrayList<Integer>();
-        ArrayList <start_end_points> samplePoints2 = new ArrayList<start_end_points>();
+       // ArrayList <start_end_points> samplePoints2 = new ArrayList<start_end_points>();
         ArrayList <obstacle_points> obstacles = new ArrayList<obstacle_points>();
         ArrayList <sample_points> samplePoints= new ArrayList<sample_points>();
 
@@ -88,13 +88,14 @@ public class Main{
         n = q[2]; //number of sample points
 
         Scanner start = new Scanner(System.in); // create a new scanner for our sample points
+
         int count =1;
         while(start.hasNextLine()) {
             r = start.nextLine();
             if (count < 2) {
-                co_ord2 = r.split(",");
-                for (int i = 0; i < co_ord2.length; i++) {
-                    x.add(Integer.parseInt(co_ord2[i]));
+                co_ord = r.split(",");
+                for (int i = 0; i < co_ord.length; i++) {
+                    z.add(Integer.parseInt(co_ord[i]));
                 }
                 count++;
             } else {
@@ -103,18 +104,18 @@ public class Main{
         }
 
         for (int i = 0; i < z.size(); i = i + 2) {
-            x_start.add(x.get(i));
+            x_cords.add(z.get(i));
         }
         //similarly for y but we start at 1
         for (int j = 1; j < z.size(); j = j + 2) {
-            y_start.add(x.get(j));
+            y_cords.add(z.get(j));
         }
 
         for(int i=0;i<x_start.size();i++) {
-            start_end_points newPoint = new start_end_points();
+            sample_points newPoint = new sample_points();
             newPoint.setX(x_start.get(i));
             newPoint.setY(y_start.get(i));
-            samplePoints2.add(newPoint);
+            samplePoints.add(newPoint);
         }
 
         Scanner e = new Scanner(System.in); // create a new scanner for our sample points
@@ -164,5 +165,4 @@ class Element implements  Comparable<Element> {
         return Double.valueOf(this.distance).compareTo(Double.valueOf(e.distance));
     }
 }
-
 
