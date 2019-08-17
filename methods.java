@@ -7,18 +7,18 @@ public class methods {
     public static int[][] adjMatrix(int n) {
         int[][] matrix = new int[n][n];
         for (int i = 0; i < matrix.length; i++) {
-            // System.out.println();
+            System.out.println();
             for (int j = 0; j < matrix[i].length; j++) {
                 matrix[i][j] = 0;
-                // matrix[j][i] =0;
-                // System.out.print(matrix[i][j]);
+                matrix[j][i] =0;
+                System.out.print(matrix[i][j]);
             }
         }
         //System.out.println();
         return matrix;
     }
 
-    public static ArrayList<ArrayList<Double>> distance(ArrayList<sample_points> points) {
+    public static int[][] distance(ArrayList<sample_points> points,int k,int adjMatrixSize) {
 
         ArrayList<ArrayList<Double>> distArray = new ArrayList<ArrayList<Double>>(points.size());
         double dist = 0;
@@ -38,41 +38,74 @@ public class methods {
             distArray.add(distances);// add the current distances list to the result list
         }
 
-        System.out.print(distArray);
-        System.out.println();
-        System.out.print(distArray.get(0).get(1));
-        System.out.println();
-
         for (int i = 0; i < distArray.size(); i++) {
             for (int j = 0; j < distArray.get(i).size(); j++) {
                 elements.add(new Element(j, distArray.get(i).get(j)));
             }
         }
         Collections.sort(elements);
-        for (int i = 0; i < elements.size(); i++) {
-                System.out.println("Dist "+ elements.get(i).distance+" "+"Index "+elements.get(i).index+" ");
-        }
+        List<Element> newList = new ArrayList(elements.subList(0, k));
 
-       // List<Element> newList = new ArrayList(elements.subList(0, k));
-        return distArray;
-    }
-
-    public static ArrayList<sample_points> removeCollisions(ArrayList<sample_points>samplePoints,ArrayList<obstacle_points>obstaclePoints){
-    ArrayList<sample_points>resultingList=new ArrayList<sample_points>();
-        for(int i=0;i<samplePoints.size();i++){
-            for(int j=0;j<obstaclePoints.size();j++){
-            if(samplePoints.get(i).getX() == obstaclePoints.get(j).getX() && samplePoints.get(i).getY() == obstaclePoints.get(j).getY()) {
-                samplePoints.remove(i);
-              }
+        int[][] matrix = new int[adjMatrixSize][adjMatrixSize];
+        for (int i = 0; i < distArray.size(); i++) {
+             System.out.println();
+            for (int j = 0; j < distArray.get(i).size(); j++) {
+                matrix[i][j] = 1;
+                matrix[j][i] =1;
+                System.out.print(matrix[i][j]);
             }
         }
-        for(int j = 0; j<samplePoints.size();j++){
+
+        return matrix;
+    }
+
+    public static ArrayList<sample_points> removeCollisions(ArrayList<sample_points>samplePoints,ArrayList<obstacle_points>obstaclePoints) {
+        ArrayList<sample_points> resultingList = new ArrayList<sample_points>();
+        for (int i = 0; i < samplePoints.size(); i++) {
+            for (int j = 0; j < obstaclePoints.size(); j++) {
+                if (samplePoints.get(i).getX() == obstaclePoints.get(j).getX() && samplePoints.get(i).getY() == obstaclePoints.get(j).getY() && onSegment(obstaclePoints,samplePoints)==true) {
+                    samplePoints.remove(i);
+                }
+            }
+        }
+        for (int j = 0; j < samplePoints.size(); j++) {
             resultingList.add(samplePoints.get(j));
         }
         return resultingList;
     }
 
+    public static boolean onSegment(ArrayList<obstacle_points>obstaclePoints,ArrayList<sample_points>samplePoints){
+
+        for (int i = 0; i < samplePoints.size(); i++) {
+            for (int j = 0; j < obstaclePoints.size(); j=j+2) {
+                if (samplePoints.get(i).getX() <= Math.max(obstaclePoints.get(j).getX(), obstaclePoints.get(j + 1).getX()) &&
+                        samplePoints.get(i).getX() >= Math.min(obstaclePoints.get(j).getX(), obstaclePoints.get(j + 1).getX()) &&
+                        samplePoints.get(i).getY() <= Math.max(obstaclePoints.get(j).getY(), obstaclePoints.get(j + 1).getY()) &&
+                        samplePoints.get(i).getY() >= Math.min(obstaclePoints.get(j).getY(), obstaclePoints.get(j + 1).getY())) {
+                    return true;
+                }
+            }
+        }
+                return false;
+    }
+
+    public static int orientation(ArrayList<obstacle_points>obstaclePoints,ArrayList<sample_points>samplePoints){
+        int val=0;
+        for (int i = 0; i < samplePoints.size(); i++) {
+            for (int j = 0; j < obstaclePoints.size(); j = j + 2) {
+                val = (samplePoints.get(i).getY() - obstaclePoints.get(j).getY()) * (obstaclePoints.get(j + 1).getX() - samplePoints.get(i).getX()) -
+                        (samplePoints.get(i).getX() - obstaclePoints.get(j).getX()) * (obstaclePoints.get(j + 1).getY() - samplePoints.get(i).getX());
+                if (val == 0) {
+                    return 0;
+                }
+            }
+        }
+            return (val>0)?1:2;
+    }
 }
+
+
+
 
 
 
